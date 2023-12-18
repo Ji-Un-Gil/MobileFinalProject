@@ -4,7 +4,6 @@ import static com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,10 +11,9 @@ import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,33 +25,28 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class PostActivity extends AppCompatActivity {
 
     private RequestQueue requestQueue;
-    private String apiUrl = "https://wldns2577.pythonanywhere.com/api/posts/";
+    private final String apiUrl = "https://wldns2577.pythonanywhere.com/api/posts/";
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
     private ImageView postImageView;
@@ -97,43 +90,49 @@ public class PostActivity extends AppCompatActivity {
                     postData.put("title", postTitle.getText().toString());
                     postData.put("text", postText.getText().toString());
                     postData.put("location", postLocation.getText().toString());
+                    // postData.put("image", convertImageToBase64(imageUri));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
                 // POST API
-                MultipartRequest multipartRequest = new MultipartRequest(apiUrl, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                }, new Response.Listener<NetworkResponse>() {
-                    @Override
-                    public void onResponse(NetworkResponse response) {
-                        Intent intent = new Intent(PostActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                }) {
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("title", postTitle.getText().toString());
-                        params.put("text", postText.getText().toString());
-                        params.put("location", postLocation.getText().toString());
-                        return params;
-                    }
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, apiUrl, postData,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Intent intent = new Intent(PostActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                error.printStackTrace();
+                            }
+                        });
 
-                    protected Map<String, DataPart> getByteData() {
-                        Map<String, DataPart> params = new HashMap<>();
-                        params.put("image", new DataPart("image.jpg", getFileDataFromDrawable(imageUri)));
-                        return params;
-                    }
-                };
 
-                requestQueue.add(multipartRequest);
+                requestQueue.add(jsonObjectRequest);
             }
         });
+    }
+
+    // 이미지를 Base64로 변환하는 메서드
+    private String convertImageToBase64(Uri imageUri) {
+        String base64Image = "";
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            if (inputStream != null) {
+                byte[] bytes = new byte[inputStream.available()];
+                inputStream.read(bytes);
+                base64Image = Base64.encodeToString(bytes, Base64.DEFAULT);
+                inputStream.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return base64Image;
     }
 
     private byte[] getFileDataFromDrawable(Uri uri) {

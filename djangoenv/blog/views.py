@@ -1,8 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
-from django.core.files.base import ContentFile
-import base64
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.generics import RetrieveAPIView, get_object_or_404
@@ -49,15 +47,7 @@ class PostDetail(RetrieveAPIView):
 def post_create(request):
     serializer = PostSerializer(data=request.data)
     if serializer.is_valid():
-        image_str = request.data.get('image', None)
-        if image_str:
-            format, imgstr = image_str.split(';base64,')
-            ext = format.split('/')[-1]
-            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-
-            post = serializer.save()
-            post.image.save('filename.' + ext, data, save=True)  # 이미지를 모델에 저장
-
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
