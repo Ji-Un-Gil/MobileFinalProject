@@ -1,3 +1,5 @@
+import logging
+
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
@@ -43,12 +45,18 @@ class PostDetail(RetrieveAPIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
+logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 def post_create(request):
-    serializer = PostSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        logger.exception("An error occurred while creating a post: %s", str(e))
+        return Response({"error": "An error occurred while creating a post"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
