@@ -10,7 +10,11 @@
             <p>{{ post.text|linebreaksbr }}</p>
             <p>{{ post.location|linebreaksbr }}</p>
             <!-- intruder image -->
-            <img src="{{ post.image.url }}" class="rounded intruder-image-list" alt="{{ post.title }}">
+            {% if post.image %}
+                <img src="{{ post.image.url }}" class="rounded intruder-image-list" alt="{{ post.title }}">
+            {% else %}
+                <img src="{% static 'example.jpeg' %}" class="rounded intruder-image-list" alt="{{ post.title }}">
+            {% endif %}
         </div>
     {% endfor %}
 {% endblock %}
