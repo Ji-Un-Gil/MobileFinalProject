@@ -47,6 +47,8 @@ class PostDetail(RetrieveAPIView):
 @api_view(['POST'])
 def post_create(request):
     serializer = PostSerializer(data=request.data)
-    serializer.save()
-    return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
