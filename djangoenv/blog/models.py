@@ -10,7 +10,7 @@ class Post(models.Model):
     created_date = models.DateTimeField(default=timezone.now(), blank=True, null=True)
     location = models.TextField(blank=True, null=True)
     published_date = models.DateTimeField(default=timezone.now(), blank=True, null=True)
-    image = models.ImageField(upload_to='intruder_image/%Y/%m/%d/')
+    image = models.ImageField(upload_to='intruder_image/%Y/%m/%d/', blank=True, null=True)
     id = models.AutoField(primary_key=True)
 
     def publish(self):
