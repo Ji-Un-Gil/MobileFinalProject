@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PostActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/platformTitle"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginBottom="10dp"
+            android:autoSizeTextType="uniform"
+            android:background="#ff9400"
+            android:gravity="center"
+            android:text="CCTV HUB"
+            android:textColor="#ffffff" />
+
+        <EditText
+            android:id="@+id/postTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="제목을 입력하세요" />
+
+        <EditText
+            android:id="@+id/postText"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:hint="내용을 입력하세요" />
+
+        <EditText
+            android:id="@+id/postCreatedDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="촬영일자를 입력하세요" />
+
+        <TextView
+            android:id="@+id/postLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="현위치를 입력받기 위해 하단의 탐색 버튼을 누르세요" />
+
+        <ImageView
+            android:id="@+id/postImageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/example" />
+
+        <Button
+            android:id="@+id/postButtonChooseImage"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:background="#ff9400"
+            android:text="이미지 선택"
+            android:textColor="#ffffff" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/locationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#ff9400"
+                android:text="현위치 탐색"
+                android:textColor="#ffffff" />
+
+            <Button
+                android:id="@+id/postButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#ff9400"
+                android:text="게시"
+                android:textColor="#ffffff" />
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>
